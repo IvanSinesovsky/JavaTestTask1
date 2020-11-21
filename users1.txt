@@ -1,0 +1,30 @@
+100000
+Ivan
+Ivanov
+ivanivanov@bsu.com
+Student,
+37500 1234567,
+100002
+Sergey
+Sergeev
+sergeysergeev@bsu.com
+Employee,Dean,
+37529 3423429,
+100003
+Roman
+Romanov
+romanromanov@bsu.com
+Listener,
+37545 6789012,
+100004
+Pavel
+Pavlov
+pavelpavlov@bsu.com
+None,
+37556 7890123,
+100001
+Petr
+Petrov
+editedemail@gmail.com
+d,
+37501 2345678,
