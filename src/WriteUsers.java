@@ -6,7 +6,7 @@ import java.io.FileWriter;
  * Class for Users writing to file
  */
 public class WriteUsers {
-    private File file = null;
+    private File file;
 
     public WriteUsers(File file) {
         this.file = file;

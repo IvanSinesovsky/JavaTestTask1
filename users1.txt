@@ -3,13 +3,13 @@ Ivan
 Ivanov
 ivanivanov@bsu.com
 Student,
-37500 1234567,
+37500 1234567,37500 3234567,37500 2234567,
 100002
 Sergey
 Sergeev
 sergeysergeev@bsu.com
 Employee,Dean,
-37529 3423429,
+37512 3456789,37523 4567890,37534 5678901,
 100003
 Roman
 Romanov
@@ -26,5 +26,5 @@ None,
 Petr
 Petrov
 editedemail@gmail.com
-d,
+Employee,lecturer,
 37501 2345678,

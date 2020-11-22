@@ -6,17 +6,19 @@ import java.util.Scanner;
  * Class for Users reading from file
  */
 public class ReadUsers {
-    private File file = null;
-    ArrayList<User> users = null;
+    ArrayList<User> users;
+    private File    file;
 
     public ReadUsers(File file1) {
         this.file = file1;
     }
 
-    public void allUsersOutput() {
+    public void allUsersOutputInformation() {
+        System.out.println("\nALL USERS INFORMATION OUTPUT\n");
         fileToArrayList();
-        for (int i = 0; i < users.size(); i++)
+        for (int i = 0; i < users.size(); i++) {
             System.out.println(users.get(i).toString());
+        }
     }
 
     /**
@@ -38,22 +40,27 @@ public class ReadUsers {
     public void deleteUser(String name, String surname) {
         fileToArrayList();
         int i = searchUser(name, surname);
+
         if (i > -1) {
             users.remove(i);
-            System.out.println("User \"" + name + " " + surname + "\" successfully deleted.");
+            System.out.println("\nUser \"" + name + " " + surname + "\" successfully deleted.\n");
+        } else {
+            System.out.println("\nCannot found such User \"" + name + "\" and surname \"" + surname + "\"\n");
         }
-        else
-            System.out.println("Cannot found User with such name \"" + name + "\" and surname \"" + surname + "\"");
+
         reWriteFile();
     }
 
     /**
      * Method allows output information about User by name and surname
      */
-    public void someUserOutput(String name, String surname) {
+    public void someUserOutputInformation(String name, String surname) {
         fileToArrayList();
+
         int i = searchUser(name, surname);
-        System.out.println(users.get(i).toString());
+
+        System.out.println("\nInformation about " + name + " " + surname + " :\n"
+                           + users.get(i).toString() + "\n");
     }
 
     /**
@@ -63,10 +70,13 @@ public class ReadUsers {
         try {
             User user = deleteAndReturnUser(name, surname);
             User userToEdit = new User(name, surname, email, user.getRoles(), user.getPhoneNumbers());
+
             userToEdit.setUserId(user.getUserId());
             toEdit.userAdd(userToEdit);
+
+            System.out.println("\nUser`s \"" + name + "\" \"" + surname + " email has been successfully changed.\n");
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("Cannot found User with such name \"" + name + "\" and surname \"" + surname + "\"");
+            System.out.println("\nCannot found User with such name \"" + name + "\" and surname \"" + surname + "\"\n");
         }
     }
 
@@ -77,10 +87,13 @@ public class ReadUsers {
         try {
             User user = deleteAndReturnUser(name, surname);
             User userToEdit = new User(name, surname, user.getEmail(), roles, user.getPhoneNumbers());
+
             userToEdit.setUserId(user.getUserId());
             toEdit.userAdd(userToEdit);
+
+            System.out.println("\nUser`s \"" + name + "\" \"" + surname + " roles have been successfully changed.\n");
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("Cannot found User with such name \"" + name + "\" and surname \"" + surname + "\"");
+            System.out.println("\nCannot found User with such name \"" + name + "\" and surname \"" + surname + "\"\n");
         }
     }
 
@@ -91,10 +104,13 @@ public class ReadUsers {
         try {
             User user = deleteAndReturnUser(name, surname);
             User userToEdit = new User(name, surname, user.getEmail(), user.getRoles(), phoneNumbers);
+
             userToEdit.setUserId(user.getUserId());
             toEdit.userAdd(userToEdit);
+
+            System.out.println("\nUser`s \"" + name + "\" \"" + surname + " roles has been successfully changed.\n");
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("Cannot found User with such name \"" + name + "\" and surname \"" + surname + "\"");
+            System.out.println("\nCannot found User with such name \"" + name + "\" and surname \"" + surname + "\"\n");
         }
     }
 
@@ -107,7 +123,9 @@ public class ReadUsers {
         try {
             FileReader fr = new FileReader(file);
             Scanner scan = new Scanner(fr);
+
             users = fileParse(scan);
+
             scan.close();
             fr.close();
         } catch (IOException e) {
@@ -133,7 +151,9 @@ public class ReadUsers {
                 String email = scan.nextLine();
                 String[] roles = templateToArray(scan.nextLine());
                 String[] phoneNumbers = templateToArray(scan.nextLine());
+
                 User user = new User(name, surname, email, roles, phoneNumbers);
+
                 user.setUserId(temp);
                 alu.add(user);
             }
@@ -150,8 +170,9 @@ public class ReadUsers {
         User tempUser = null;
         for(int i = 0; i < users.size(); i++) {
             tempUser = users.get(i);
-            if (name.equals(tempUser.getName()) && surname.equals(tempUser.getSurname()))
+            if (name.equals(tempUser.getName()) && surname.equals(tempUser.getSurname())) {
                 return i;
+            }
         }
         return -1;
     }
@@ -162,7 +183,10 @@ public class ReadUsers {
     private void reWriteFile() {
         try {
             fileClear();
-        } catch (FileNotFoundException e) { e.printStackTrace(); }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         WriteUsers writeUsers = new WriteUsers(file);
         for (int i = 0; i < users.size(); i++)
             writeUsers.userAdd(users.get(i));
@@ -175,11 +199,15 @@ public class ReadUsers {
      */
     private String[] templateToArray(String templateLine) {
         int commaNumber = 0;
+        String[] templateArray;
 
-        for(int i = 0; i < templateLine.length(); i++)
-            if (templateLine.charAt(i) == ',')
+        for(int i = 0; i < templateLine.length(); i++) {
+            if (templateLine.charAt(i) == ',') {
                 commaNumber++;
-        String[] templateArray = new String[commaNumber];
+            }
+        }
+
+        templateArray = new String[commaNumber];
 
         StringBuilder tillComma = new StringBuilder(12);
         for (int i = 0, j = 0; i < commaNumber; i++, j++) {
@@ -190,21 +218,24 @@ public class ReadUsers {
             templateArray[i] = tillComma.toString();
             tillComma.setLength(0);
         }
+
         return templateArray;
     }
 
     /**
-     * Private method for userEdit() methods
-     * To edit some User this method deletes from file and returns it
+     * This method deletes from file and returns it
      * Then editUser() method appends this User to file with some changes
      * @return User to save it`s id
      */
     private User deleteAndReturnUser(String name, String surname) {
         fileToArrayList();
         int i = searchUser(name, surname);
+
         User user = users.get(i);
         users.remove(i);
+
         reWriteFile();
+
         return user;
     }
 }

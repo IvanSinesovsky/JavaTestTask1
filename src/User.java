@@ -7,25 +7,21 @@ import java.util.regex.Pattern;
  * Class for User description
  */
 public class User implements Serializable {
-    private String name = null;
-    private String surname = null;
-    private String email = null;
-    private String[] roles = null;
-    private String[] phoneNumbers = null;
     private static int id = 100_000;
-    private int userId;
+    private int        userId;
+    private String     name;
+    private String     surname;
+    private String     email;
+    private String[]   roles;
+    private String[]   phoneNumbers;
 
-    {this.userId = id++;}
+    {   this.userId = id++; }
 
     public User(String name, String surname, String email, String[] roles, String[] phoneNumbers) {
         this.name = stringValidate(name);
-
         this.surname = stringValidate(surname);
-
         this.email = emailValidate(email);
-
         this.roles = rolesValidate(roles);
-
         this.phoneNumbers = phoneNumbersValidate(phoneNumbers);
     }
 
@@ -37,15 +33,18 @@ public class User implements Serializable {
 
     /**
      * Method for append User fields to file
-     * @return
+     * @return united User`s fields
      */
     public String appendToFile() {
-        return userId + "\n" + name + '\n' + surname + '\n' + email + '\n' +
-                arrayToString(roles) + '\n' + arrayToString(phoneNumbers) + '\n';
+        return userId + "\n" + name + '\n' + surname + '\n' + email + '\n'
+                + arrayToString(roles) + '\n' + arrayToString(phoneNumbers) + '\n';
     }
 
+
     /**
-     * Checking name and surname for valid
+     * @param string is User`s name or surname to check on valid
+     * @return string if string != null
+     * @return stringValidate(value from console) if string == null
      */
     private String stringValidate(String string) {
         try {
@@ -59,68 +58,88 @@ public class User implements Serializable {
     }
 
     /**
-     * Method allows check email address for valid (checks for '@' and '.')
+     * Method allows check email address on valid
+     * @param email is String to check
+     * @return email if String contains '@' and '.'
+     * @return emailValidate(email from console) if String value is wrong
      */
     private String emailValidate(String email) {
         boolean firstSymbol = false;
         boolean secondSymbol = false;
-        for (int i = 0; i < email.length(); i++)
+        Scanner scan = new Scanner(System.in);
+        String newEmail;
+
+        for (int i = 0; i < email.length(); i++) {
             if (email.charAt(i) == '@') {
                 firstSymbol = true;
-                break;
             }
-        for (int i = 0; i < email.length(); i++)
             if (email.charAt(i) == '.') {
                 secondSymbol = true;
-                break;
             }
-        if (firstSymbol & secondSymbol)
-            return email;
-        else {
-            Scanner scan = new Scanner(System.in);
-            System.out.println("Incorrect email! Please, try again: ");
-            String newEmail = scan.next();
-            return emailValidate(newEmail);
+            if (firstSymbol & secondSymbol) {
+                return email;
+            }
         }
+
+        System.out.println("Incorrect email! Please, try again: ");
+        newEmail = scan.next();
+
+        return emailValidate(newEmail);
     }
 
     /**
-     * Checking roles for valid
+     * Method allows check roles on valid
+     * @param roles is Strings to check
+     * @return roles if (1 <= roles.length <= 3)
+     * @return rolesValidate(roles from console) if roles.length is wrong
      */
     private String[] rolesValidate(String[] roles) {
         try {
             assert roles[0] != null && roles.length < 4 && roles.length > 0;
+            return roles;
         } catch (AssertionError e) {
-            System.out.println("Incorrect roles values! Please, entry roles number: ");
-            int rolesNumber = numberFromConsole();
-            while (rolesNumber > 3 || rolesNumber < 1) {
-                System.out.println("Incorrect roles values! Please, entry roles number: ");
+            int rolesNumber;
+            String[] newRoles;
+
+            do {
+                System.out.println("Incorrect roles number value! Please, entry new roles number: ");
                 rolesNumber = numberFromConsole();
-            }
-            String[] newRoles = new String[rolesNumber];
-            for (int i = 0; i < rolesNumber; i++)
+            } while (rolesNumber > 3 || rolesNumber < 1);
+
+            newRoles = new String[rolesNumber];
+
+            for (int i = 0; i < rolesNumber; i++) {
                 newRoles[i] = stringFromConsole();
+            }
+
             return rolesValidate(newRoles);
         }
-        return roles;
     }
 
     /**
-     * Method allows check phone number for valid (for example, 37500 1234567)
+     * Method allows check phone numbers on valid
+     * @param phoneNumbers is Strings to check
+     * @return phoneNumbers if (1 <= phoneNumbers.length <= 3) and all numbers are correct (for example, 37500 1234567)
+     * @return phoneNumbersValidate(phone numbers from console) if phoneNumbers.length is wrong or
      */
     private String[] phoneNumbersValidate(String[] phoneNumbers) {
         for (int i = 0; i < phoneNumbers.length; i++) {
-            if (!checkOnePhoneNumber(phoneNumbers[i])) {
-                System.out.println("Incorrect value! Please, input phone numbers number: ");
-                int numbersNumber = numberFromConsole();
-                while(numbersNumber > 3 || numbersNumber < 1) {
-                    System.out.println("Incorrect phone number(s) input. Please, input phone numbers number: ");
+            if ((phoneNumbers.length > 3 || phoneNumbers.length < 1)
+                    || !checkOnePhoneNumber(phoneNumbers[i])) {
+                int numbersNumber;
+                String[] newPhoneNumbers;
+
+                do {
+                    System.out.println("Incorrect phone number input. Please, entry new phone numbers number: ");
                     numbersNumber = numberFromConsole();
+                } while (numbersNumber > 3 || numbersNumber < 1);
+
+                newPhoneNumbers = new String[numbersNumber];
+
+                for (int j = 0; j < numbersNumber; j++) {
+                    newPhoneNumbers[j] = stringFromConsole();
                 }
 
-                String[] newPhoneNumbers = new String[numbersNumber];
-                for (int j = 0; j < numbersNumber; j++)
-                    newPhoneNumbers[j] = stringFromConsole();
                 return phoneNumbersValidate(newPhoneNumbers);
             }
         }
@@ -128,7 +147,8 @@ public class User implements Serializable {
     }
 
     /**
-     * Using regEx to check one phone number for valid
+     * Method allows check one phone number(@param number) on valid
+     * @return true if number is correct
      */
     private boolean checkOnePhoneNumber(String number) {
         Pattern pattern = Pattern.compile("^((375)([0-9]{2})(\\s)([0-9]{7}))$");
@@ -138,6 +158,7 @@ public class User implements Serializable {
 
     /**
      * Method allows scan integer line in console and return it
+     * @return value from console
      */
     private int numberFromConsole() {
         Scanner scan = new Scanner(System.in);
@@ -147,22 +168,26 @@ public class User implements Serializable {
 
     /**
      * Method allows scan String line in console and return it
+     * @return String from console
      */
     private String stringFromConsole() {
-        System.out.println("Please, entry some value: ");
+        System.out.println("Please, entry new value: ");
         Scanner scan = new Scanner(System.in);
         String number = scan.nextLine();
         return number;
     }
 
+
     /**
+     * Method allows convert String[] to String adding separators
      * @param elements is array to convert
      * @return String of separated with ',' n String[n] elements
      */
     private String arrayToString(String[] elements) {
         StringBuilder stringBuilder = new StringBuilder(36);
-        for (String element : elements)
+        for (String element : elements) {
             stringBuilder.append(element).append(',');
+        }
         return stringBuilder.toString();
     }
 
@@ -172,32 +197,17 @@ public class User implements Serializable {
     public String getName() {
         return name;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
     public String getSurname() {
         return surname;
-    }
-    public void setSurname(String surname) {
-        this.surname = surname;
     }
     public String getEmail() {
         return email;
     }
-    public void setEmail(String email) {
-        this.email = email;
-    }
     public String[] getRoles() {
         return roles;
     }
-    public void setRoles(String[] roles) {
-        this.roles = roles;
-    }
     public String[] getPhoneNumbers() {
         return phoneNumbers;
-    }
-    public void setPhoneNumbers(String[] phoneNumbers) {
-        this.phoneNumbers = phoneNumbers;
     }
     public int getUserId() {
         return userId;
