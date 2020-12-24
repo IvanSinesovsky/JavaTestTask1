@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
  * Class for User description
  */
 public class User implements Serializable {
+    private static final long serialVersionUID = 1L;
     private static int id = 100_000;
     private int        userId;
     private String     name;
